@@ -1,4 +1,4 @@
-import random 
+import random
 import string
 import json
 import re
@@ -26,11 +26,7 @@ def generate_password(length=12, use_digits=True, use_symbols=True, include_rare
     if not lowercase or not uppercase or (use_digits and not digits) or (use_symbols and not all_symbols):
         raise ValueError("Pēc izslēgto simbolu noņemšanas nav iespējams izveidot paroli ar dotajiem parametriem.")
 
-    password_chars = [
-        random.choice(lowercase),
-        random.choice(uppercase),
-    ]
-
+    password_chars = [random.choice(lowercase), random.choice(uppercase)]
     if use_digits:
         password_chars.append(random.choice(digits))
     if use_symbols:
@@ -64,28 +60,12 @@ def check_password_strength(password):
         return "Vājš"
 
 
-def save_passwords(passwords, filename="passwords.json"):
-    try:
-        with open(filename, "r", encoding="utf-8") as file:
-            data = json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError):
-        data = []
-
-    existing_passwords = {entry["password"] for entry in data}
-
-    for pwd in passwords:
-        if pwd not in existing_passwords:
-            data.append({"password": pwd, "strength": check_password_strength(pwd)})
-
-    with open(filename, "w", encoding="utf-8") as file:
-        json.dump(data, file, indent=4, ensure_ascii=False)
-    print(f"Paroles tiek saglabātas {filename}")
+def filter_passwords_by_strength(passwords, level):
+    return [p for p in passwords if check_password_strength(p) == level]
 
 
-def clear_password_file(filename="passwords.json"):
-    with open(filename, "w", encoding="utf-8") as file:
-        json.dump([], file, indent=4, ensure_ascii=False)
-    print(f"{filename} ir notīrīts.")
+def search_passwords(passwords, substring):
+    return [p for p in passwords if substring in p]
 
 
 def ask_yes_no(prompt):
@@ -97,53 +77,130 @@ def ask_yes_no(prompt):
             print("Nepareiza ievade. Lūdzu ievadiet 'y' vai 'n'.")
 
 
+class PasswordManager:
+    def __init__(self):
+        self.passwords = []
+
+    def generate(self, length, use_digits, use_symbols, include_rare, excluded_chars):
+        password = generate_password(length, use_digits, use_symbols, include_rare, excluded_chars)
+        self.passwords.append(password)
+        return password
+
+    def check_strength(self, password):
+        return check_password_strength(password)
+
+    def save(self, filename="passwords.json"):
+        try:
+            with open(filename, "r", encoding="utf-8") as file:
+                data = json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            data = []
+
+        existing_passwords = {entry["password"] for entry in data}
+        for pwd in self.passwords:
+            if pwd not in existing_passwords:
+                data.append({"password": pwd, "strength": check_password_strength(pwd)})
+
+        with open(filename, "w", encoding="utf-8") as file:
+            json.dump(data, file, indent=4, ensure_ascii=False)
+        self.passwords = []
+        print(f"Paroles saglabātas failā: {filename}")
+
+    def clear_file(self, filename="passwords.json"):
+        with open(filename, "w", encoding="utf-8") as file:
+            json.dump([], file, indent=4, ensure_ascii=False)
+        print(f"{filename} ir notīrīts.")
+
+    def filter_by_strength(self, level):
+        try:
+            with open("passwords.json", "r", encoding="utf-8") as file:
+                data = json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            data = []
+
+        return [entry["password"] for entry in data if entry.get("strength") == level]
+
+    def search(self, substring):
+        try:
+            with open("passwords.json", "r", encoding="utf-8") as file:
+                data = json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            data = []
+
+        return [entry["password"] for entry in data if substring in entry.get("password", "")]
+
+
 def main():
-    passwords = []
+    manager = PasswordManager()
+
     while True:
         print("\n1. Ģenerēt paroli")
-        print("2. Pārbaudiet paroles sarežģītību")
-        print("3. Saglabāt paroles failā")
-        print("4. Iziet")
+        print("2. Pārbaudīt paroles stiprumu")
+        print("3. Saglabāt ģenerētās paroles failā")
+        print("4. Notīrīt parole failu")
+        print("5. Meklēt paroles pēc fragmenta")
+        print("6. Filtrēt paroles pēc stipruma")
+        print("7. Iziet")
 
         choice = input("Atlasīt darbību: ")
 
         if choice == "1":
             try:
-                length_input = input("Paroles garums (noklusējums 12): ")
-                length = int(length_input) if length_input else 12
+                length = int(input("Paroles garums (noklusējums 12): ") or 12)
             except ValueError:
                 print("Nepareiza ievade. Izmantots garums 12.")
                 length = 12
 
             use_digits = ask_yes_no("Ieslēgt ciparus? (y/n): ")
-            use_symbols = ask_yes_no("Vai iespējot īpašās rakstzīmes? (y/n): ")
-            include_rare = ask_yes_no("Vai ieslēgt arī retas rakstzīmes (`:;~\\|[]{}'\")? (y/n): ")
-            excluded = input("Ievadi simbolus, kurus izslēgt no paroles (atstāj tukšu, ja nav): ")
+            use_symbols = ask_yes_no("Ieslēgt īpašās rakstzīmes? (y/n): ")
+            include_rare = ask_yes_no("Iekļaut arī retās rakstzīmes (`:;~\\|[]{}'\")? (y/n): ")
+            excluded = input("Simboli, ko izslēgt (atstāj tukšu, ja nav): ")
 
             try:
-                password = generate_password(length, use_digits, use_symbols, include_rare, excluded)
-                print("Ģenerētā parole:", password)
-                print("Paroles stiprums:", check_password_strength(password))
-                passwords.append(password)
+                pwd = manager.generate(length, use_digits, use_symbols, include_rare, excluded)
+                print("Ģenerētā parole:", pwd)
+                print("Stiprums:", manager.check_strength(pwd))
             except ValueError as e:
                 print("Kļūda:", str(e))
 
         elif choice == "2":
-            password = input("Ievadiet paroli, lai pārbaudītu: ")
-            strength = check_password_strength(password)
-            print("Paroles stiprums:", strength)
+            pwd = input("Ievadi paroli pārbaudei: ")
+            print("Paroles stiprums:", manager.check_strength(pwd))
+            manager.passwords.append(pwd)
+            if ask_yes_no("Ne vēlaties saglabāt šo paroli failā? (y/n): "):
+                manager.save()
 
         elif choice == "3":
-            save_passwords(passwords)
-            passwords = []
+            manager.save()
 
         elif choice == "4":
-            if ask_yes_no("Vai notīrīt passwords.json failu? (y/n): "):
-                clear_password_file()
+            if ask_yes_no("Vai tiešām dzēst paroles no faila? (y/n): "):
+                manager.clear_file()
+
+        elif choice == "5":
+            sub = input("Ievadi fragmentu meklēšanai: ")
+            found = manager.search(sub)
+            print("Rezultāti:", found if found else "Nav sakritību.")
+
+        elif choice == "6":
+            level_map = {"1": "Vājš", "2": "Vidējs", "3": "Spēcīgs"}
+            while True:
+                level_input = input("Ievadi vajadzīgā līmeņa numuru (1 - Vājš, 2 - Vidējs, 3 - Spēcīgs): ").strip()
+                if level_input in level_map:
+                    level = level_map[level_input]
+                    break
+                else:
+                    print("Nepareiza izvēle. Mēģini vēlreiz (1, 2 vai 3).")
+
+            filtered = manager.filter_by_strength(level)
+            print("Rezultāti:", filtered if filtered else "Nav sakritību.")
+
+        elif choice == "7":
+            print("Programma tiek aizvērta.")
             break
 
         else:
-            print("Nepareiza ievade. Mēģiniet vēlreiz.")
+            print("Nepareiza izvēle. Mēģini vēlreiz.")
 
 
 if __name__ == "__main__":
