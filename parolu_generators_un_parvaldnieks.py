@@ -1,4 +1,4 @@
-import random
+import random 
 import string
 import json
 import re
@@ -59,14 +59,14 @@ def check_password_strength(password):
     if length_score and has_lower and has_upper and has_digit and has_symbol:
         return "Spēcīgs"
     elif length_score and ((has_digit and has_symbol) or (has_upper and has_lower)):
-        return "vidēji"
+        return "Vidējs"
     else:
-        return "Vāji"
+        return "Vājš"
 
 
 def save_passwords(passwords, filename="passwords.json"):
     try:
-        with open(filename, "r") as file:
+        with open(filename, "r", encoding="utf-8") as file:
             data = json.load(file)
     except (FileNotFoundError, json.JSONDecodeError):
         data = []
@@ -77,14 +77,14 @@ def save_passwords(passwords, filename="passwords.json"):
         if pwd not in existing_passwords:
             data.append({"password": pwd, "strength": check_password_strength(pwd)})
 
-    with open(filename, "w") as file:
-        json.dump(data, file, indent=4)
+    with open(filename, "w", encoding="utf-8") as file:
+        json.dump(data, file, indent=4, ensure_ascii=False)
     print(f"Paroles tiek saglabātas {filename}")
 
 
 def clear_password_file(filename="passwords.json"):
-    with open(filename, "w") as file:
-        json.dump([], file, indent=4)
+    with open(filename, "w", encoding="utf-8") as file:
+        json.dump([], file, indent=4, ensure_ascii=False)
     print(f"{filename} ir notīrīts.")
 
 
@@ -123,6 +123,7 @@ def main():
             try:
                 password = generate_password(length, use_digits, use_symbols, include_rare, excluded)
                 print("Ģenerētā parole:", password)
+                print("Paroles stiprums:", check_password_strength(password))
                 passwords.append(password)
             except ValueError as e:
                 print("Kļūda:", str(e))
