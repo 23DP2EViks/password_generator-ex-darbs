@@ -1,30 +1,67 @@
 import random
 import string
 import json
+import re
 
 
-def generate_password(length=12, use_digits=True, use_symbols=True):
-    characters = string.ascii_letters 
+def generate_password(length=12, use_digits=True, use_symbols=True, include_rare_symbols=False, excluded_chars=""):
+    if length < 4:
+        raise ValueError("Parolei jābūt vismaz 4 simbolus garai.")
+
+    lowercase = string.ascii_lowercase
+    uppercase = string.ascii_uppercase
+    digits = string.digits
+    common_symbols = "!@#$%^&*()-_=+,.<>/?"
+    rare_symbols = "`:;~\\|[]{}'\""
+    all_symbols = common_symbols + (rare_symbols if include_rare_symbols else "")
+
+    def remove_excluded(s):
+        return ''.join(c for c in s if c not in excluded_chars and c != ' ')
+
+    lowercase = remove_excluded(lowercase)
+    uppercase = remove_excluded(uppercase)
+    digits = remove_excluded(digits)
+    all_symbols = remove_excluded(all_symbols)
+
+    if not lowercase or not uppercase or (use_digits and not digits) or (use_symbols and not all_symbols):
+        raise ValueError("Pēc izslēgto simbolu noņemšanas nav iespējams izveidot paroli ar dotajiem parametriem.")
+
+    password_chars = [
+        random.choice(lowercase),
+        random.choice(uppercase),
+    ]
+
     if use_digits:
-        characters += string.digits 
+        password_chars.append(random.choice(digits))
     if use_symbols:
-        characters += string.punctuation 
+        password_chars.append(random.choice(all_symbols))
 
-    password = ''.join(random.choice(characters) for _ in range(length))
-    return password
+    pool = lowercase + uppercase
+    if use_digits:
+        pool += digits
+    if use_symbols:
+        pool += all_symbols
+
+    remaining_length = length - len(password_chars)
+    password_chars += random.choices(pool, k=remaining_length)
+    random.shuffle(password_chars)
+
+    return ''.join(password_chars)
+
 
 def check_password_strength(password):
     length_score = len(password) >= 12
-    has_digits = any(char.isdigit() for char in password)
-    has_symbols = any(char in string.punctuation for char in password)
-    
-    strength = "Vāji"
-    if length_score and has_digits and has_symbols:
-        strength = "Spēcīgs"
-    elif length_score and (has_digits or has_symbols):
-        strength = "vidēji"
+    has_lower = re.search(r'[a-z]', password) is not None
+    has_upper = re.search(r'[A-Z]', password) is not None
+    has_digit = re.search(r'\d', password) is not None
+    has_symbol = re.search(r'[^\w\s]', password) is not None
 
-    return strength
+    if length_score and has_lower and has_upper and has_digit and has_symbol:
+        return "Spēcīgs"
+    elif length_score and ((has_digit and has_symbol) or (has_upper and has_lower)):
+        return "vidēji"
+    else:
+        return "Vāji"
 
 
 def save_passwords(passwords, filename="passwords.json"):
@@ -34,11 +71,30 @@ def save_passwords(passwords, filename="passwords.json"):
     except (FileNotFoundError, json.JSONDecodeError):
         data = []
 
-    data.extend(passwords)
+    existing_passwords = {entry["password"] for entry in data}
+
+    for pwd in passwords:
+        if pwd not in existing_passwords:
+            data.append({"password": pwd, "strength": check_password_strength(pwd)})
 
     with open(filename, "w") as file:
         json.dump(data, file, indent=4)
     print(f"Paroles tiek saglabātas {filename}")
+
+
+def clear_password_file(filename="passwords.json"):
+    with open(filename, "w") as file:
+        json.dump([], file, indent=4)
+    print(f"{filename} ir notīrīts.")
+
+
+def ask_yes_no(prompt):
+    while True:
+        answer = input(prompt).strip().lower()
+        if answer in ['y', 'n']:
+            return answer == 'y'
+        else:
+            print("Nepareiza ievade. Lūdzu ievadiet 'y' vai 'n'.")
 
 
 def main():
@@ -52,13 +108,24 @@ def main():
         choice = input("Atlasīt darbību: ")
 
         if choice == "1":
-            length = int(input("Paroles garums (noklusējums 12): ") or 12)
-            use_digits = input("Ieslēgt ciparus? (y/n): ").lower() == 'y'
-            use_symbols = input("Vai iespējot īpašās rakstzīmes? (y/n): ").lower() == 'y'
+            try:
+                length_input = input("Paroles garums (noklusējums 12): ")
+                length = int(length_input) if length_input else 12
+            except ValueError:
+                print("Nepareiza ievade. Izmantots garums 12.")
+                length = 12
 
-            password = generate_password(length, use_digits, use_symbols)
-            print("Ģenerētā parole:", password)
-            passwords.append(password)
+            use_digits = ask_yes_no("Ieslēgt ciparus? (y/n): ")
+            use_symbols = ask_yes_no("Vai iespējot īpašās rakstzīmes? (y/n): ")
+            include_rare = ask_yes_no("Vai ieslēgt arī retas rakstzīmes (`:;~\\|[]{}'\")? (y/n): ")
+            excluded = input("Ievadi simbolus, kurus izslēgt no paroles (atstāj tukšu, ja nav): ")
+
+            try:
+                password = generate_password(length, use_digits, use_symbols, include_rare, excluded)
+                print("Ģenerētā parole:", password)
+                passwords.append(password)
+            except ValueError as e:
+                print("Kļūda:", str(e))
 
         elif choice == "2":
             password = input("Ievadiet paroli, lai pārbaudītu: ")
@@ -70,10 +137,13 @@ def main():
             passwords = []
 
         elif choice == "4":
+            if ask_yes_no("Vai notīrīt passwords.json failu? (y/n): "):
+                clear_password_file()
             break
 
         else:
             print("Nepareiza ievade. Mēģiniet vēlreiz.")
+
 
 if __name__ == "__main__":
     main()
