@@ -101,9 +101,9 @@ Ievadiet līmeņa numuru:
 
 1 — Vājš
 
-2 — Videoklipi
+2 — Vidējs
 
-3 — Sugas
+3 — Spēcīgs
 
 Programma parādīs paroļu sarakstu no faila, kas atbilst šim līmenim.
 
@@ -134,9 +134,3 @@ Ekrānā parādīsies tabula ar divām kolonnām: "Parole" un "Stiprums".
 1. Pārliecinies, ka Python 3 ir uzstādīts.
 2. Lejupielādē `parolu_generators_un_parvaldnieks.py` failu.
 3. Palaid programmu komandrindā.
-
-
-## Lietošana
-
-1. Pārliecinies, ka Python 3 ir uzstādīts.
-2. Lejupielādē failu un palaiž programmu:
