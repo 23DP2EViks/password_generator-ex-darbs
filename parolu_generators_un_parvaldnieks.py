@@ -60,14 +60,6 @@ def check_password_strength(password):
         return "Vājš"
 
 
-def filter_passwords_by_strength(passwords, level):
-    return [p for p in passwords if check_password_strength(p) == level]
-
-
-def search_passwords(passwords, substring):
-    return [p for p in passwords if substring in p]
-
-
 def ask_yes_no(prompt):
     while True:
         answer = input(prompt).strip().lower()
@@ -75,6 +67,17 @@ def ask_yes_no(prompt):
             return answer == 'y'
         else:
             print("Nepareiza ievade. Lūdzu ievadiet 'y' vai 'n'.")
+
+
+def display_password_table(password_list):
+    if not password_list:
+        print("Nav par ko rādīt.")
+        return
+
+    print(f"\n{'Parole':<25} | {'Stiprums'}")
+    print("-" * 40)
+    for item in password_list:
+        print(f"{item['password']:<25} | {item['strength']}")
 
 
 class PasswordManager:
@@ -129,6 +132,26 @@ class PasswordManager:
 
         return [entry["password"] for entry in data if substring in entry.get("password", "")]
 
+    def sort_passwords(self, by="length"):
+        try:
+            with open("passwords.json", "r", encoding="utf-8") as file:
+                data = json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            data = []
+
+        if by == "length":
+            sorted_data = sorted(data, key=lambda x: len(x["password"]))
+        elif by == "alphabet":
+            sorted_data = sorted(data, key=lambda x: x["password"])
+        elif by == "strength":
+            order = {"Vājš": 0, "Vidējs": 1, "Spēcīgs": 2}
+            sorted_data = sorted(data, key=lambda x: order.get(x["strength"], -1))
+        else:
+            print("Nepareizs kārtošanas veids.")
+            return []
+
+        return sorted_data
+
 
 def main():
     manager = PasswordManager()
@@ -141,6 +164,7 @@ def main():
         print("5. Meklēt paroles pēc fragmenta")
         print("6. Filtrēt paroles pēc stipruma")
         print("7. Iziet")
+        print("8. Kārtot paroles un parādīt tabulā")
 
         choice = input("Atlasīt darbību: ")
 
@@ -198,6 +222,22 @@ def main():
         elif choice == "7":
             print("Programma tiek aizvērta.")
             break
+
+        elif choice == "8":
+            print("\nKārtošanas veidi:")
+            print("1 - Garums")
+            print("2 - Alfabēts")
+            print("3 - Stiprums")
+            sort_choice = input("Izvēlies kārtošanas veidu (1/2/3): ").strip()
+            sort_map = {"1": "length", "2": "alphabet", "3": "strength"}
+            sort_by = sort_map.get(sort_choice)
+
+            if not sort_by:
+                print("Nepareiza izvēle.")
+                continue
+
+            sorted_pwds = manager.sort_passwords(by=sort_by)
+            display_password_table(sorted_pwds)
 
         else:
             print("Nepareiza izvēle. Mēģini vēlreiz.")
