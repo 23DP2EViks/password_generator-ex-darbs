@@ -1,4 +1,4 @@
-### Paroļu ģenerators un pārvaldnieks
+# Paroļu ģenerators un pārvaldnieks
 Šī ir Python konsoles programma, kas palīdz lietotājiem ģenerēt, pārvaldīt un pārbaudīt paroles pielāgojamā un drošā veidā.
 
 ## Galvenās iespējas
