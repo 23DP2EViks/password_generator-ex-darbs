@@ -1,7 +1,7 @@
-Paroļu ģenerators un pārvaldnieks
+### Paroļu ģenerators un pārvaldnieks
 Šī ir Python konsoles programma, kas palīdz lietotājiem ģenerēt, pārvaldīt un pārbaudīt paroles pielāgojamā un drošā veidā.
 
-Galvenās iespējas
+## Galvenās iespējas
 ✅ Ģenerēt drošas paroles ar pielāgotu garumu, cipariem un simboliem
 
 ✅ Iespēja iekļaut vai izslēgt retāk sastopamos simbolus (:;~\|[]{}'")
