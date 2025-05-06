@@ -1,18 +1,30 @@
-# Paroļu ģenerators un pārvaldnieks
+Paroļu ģenerators un pārvaldnieks
+Šī ir Python konsoles programma, kas palīdz lietotājiem ģenerēt, pārvaldīt un pārbaudīt paroles pielāgojamā un drošā veidā.
 
-Šī ir Python konsoles programma, kas palīdz lietotājiem ģenerēt, pārvaldīt un pārbaudīt paroles pielāgojamā veidā.
+Galvenās iespējas
+✅ Ģenerēt drošas paroles ar pielāgotu garumu, cipariem un simboliem
 
-## Galvenās iespējas
+✅ Iespēja iekļaut vai izslēgt retāk sastopamos simbolus (:;~\|[]{}'")
 
-- Ģenerēt drošas paroles ar pielāgotu garumu, cipariem un simboliem
-- Izvēlēties, kurus simbolus izmantot vai izslēgt
-- Nodrošināta lietotāja ievades validācija (piemēram, tikai 'y' vai 'n' atbildes)
-- Pārbaudīt paroļu stiprumu, izmantojot regulārās izteiksmes
-- Saglabāt paroles ar to stipruma novērtējumu (Spēcīga / Vidēja / Vāja)
-- Apskatīt saglabātās paroles pēc stipruma
-- Saglabāt tikai unikālas paroles (bez dublikātiem)
-- Pirms iziešanas iespējams izvēlēties, vai dzēst paroles no faila
-- Reģistrēt darbības žurnāla failā
+✅ Izvēlēties, kurus simbolus izmantot vai izslēgt (piemēram, nelietot noteiktus simbolus)
+
+✅ Nodrošināta lietotāja ievades validācija (y/n, cipari u.c.)
+
+✅ Pārbaudīt paroļu stiprumu ar regulārām izteiksmēm (vājš / vidējs / spēcīgs)
+
+✅ Saglabāt paroles failā passwords.json kopā ar to stipruma novērtējumu
+
+✅ Saglabāt tikai unikālas paroles (bez dublikātiem)
+
+✅ Notīrīt parole failu pēc lietotāja pieprasījuma
+
+✅ Meklēt paroles pēc noteikta fragmenta
+
+✅ Filtrēt saglabātās paroles pēc stipruma
+
+✅ Kārtot paroles pēc garuma, alfabēta vai stipruma
+
+✅ Parādīt paroles ērtā tabulas formātā konsolē
 
 ## Izmantotās tehnoloģijas
 
