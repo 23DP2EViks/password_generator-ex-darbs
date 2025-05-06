@@ -27,7 +27,7 @@
 ✅ Parādīt paroles ērtā tabulas formātā konsolē
 
 
-##📘 Programmas lietošanas instrukcija
+## 📘 Programmas lietošanas instrukcija
 Programma tiek palaista caur konsoli un piedāvā 8 izvēlnes punktus. Tālāk ir sniegts detalizēts skaidrojums par to, ko katrs punkts dara un kā to izmantot.
 
 ### 1. Ģenerēt paroli 
