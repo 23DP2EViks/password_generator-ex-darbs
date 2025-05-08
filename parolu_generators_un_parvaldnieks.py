@@ -66,18 +66,20 @@ def ask_yes_no(prompt):
         if answer in ['y', 'n']:
             return answer == 'y'
         else:
-            print("Nepareiza ievade. Lūdzu ievadiet 'y' vai 'n'.")
+            print("\033[92mNepareiza ievade. Lūdzu ievadiet 'y' vai 'n'.\033[0m")
 
 
 def display_password_table(password_list):
     if not password_list:
-        print("Nav par ko rādīt.")
+        print("\033[92mNav par ko rādīt.\033[0m")
         return
 
-    print(f"\n{'Parole':<25} | {'Stiprums'}")
-    print("-" * 40)
-    for item in password_list:
-        print(f"{item['password']:<25} | {item['strength']}")
+    print("\033[92m")
+    print(f"{'N.p.k.':<6} | {'Parole':<25} | {'Stiprums'}")
+    print("-" * 50)
+    for idx, item in enumerate(password_list, 1):
+        print(f"{idx:<6} | {item['password']:<25} | {item['strength']}")
+    print("\033[0m")
 
 
 class PasswordManager:
@@ -107,12 +109,12 @@ class PasswordManager:
         with open(filename, "w", encoding="utf-8") as file:
             json.dump(data, file, indent=4, ensure_ascii=False)
         self.passwords = []
-        print(f"Paroles saglabātas failā: {filename}")
+        print(f"\033[92mParoles saglabātas failā: {filename}\033[0m")
 
     def clear_file(self, filename="passwords.json"):
         with open(filename, "w", encoding="utf-8") as file:
             json.dump([], file, indent=4, ensure_ascii=False)
-        print(f"{filename} ir notīrīts.")
+        print(f"\033[92m{filename} ir notīrīts.\033[0m")
 
     def filter_by_strength(self, level):
         try:
@@ -147,7 +149,7 @@ class PasswordManager:
             order = {"Vājš": 0, "Vidējs": 1, "Spēcīgs": 2}
             sorted_data = sorted(data, key=lambda x: order.get(x["strength"], -1))
         else:
-            print("Nepareizs kārtošanas veids.")
+            print("\033[92mNepareizs kārtošanas veids.\033[0m")
             return []
 
         return sorted_data
@@ -157,14 +159,14 @@ def main():
     manager = PasswordManager()
 
     while True:
-        print("\n1. Ģenerēt paroli")
+        print("\n\033[92m1. Ģenerēt paroli")
         print("2. Pārbaudīt paroles stiprumu")
         print("3. Saglabāt ģenerētās paroles failā")
         print("4. Notīrīt parole failu")
         print("5. Meklēt paroles pēc fragmenta")
         print("6. Filtrēt paroles pēc stipruma")
         print("7. Iziet")
-        print("8. Kārtot paroles un parādīt tabulā")
+        print("8. Kārtot paroles un parādīt tabulā\033[0m")
 
         choice = input("Atlasīt darbību: ")
 
@@ -172,7 +174,7 @@ def main():
             try:
                 length = int(input("Paroles garums (noklusējums 12): ") or 12)
             except ValueError:
-                print("Nepareiza ievade. Izmantots garums 12.")
+                print("\033[92mNepareiza ievade. Izmantots garums 12.\033[0m")
                 length = 12
 
             use_digits = ask_yes_no("Ieslēgt ciparus? (y/n): ")
@@ -182,14 +184,16 @@ def main():
 
             try:
                 pwd = manager.generate(length, use_digits, use_symbols, include_rare, excluded)
-                print("Ģenerētā parole:", pwd)
-                print("Stiprums:", manager.check_strength(pwd))
+                strength = manager.check_strength(pwd)
+                print(f"\033[92mĢenerētā parole: {pwd}")
+                print(f"Stiprums: {strength}\033[0m")
             except ValueError as e:
-                print("Kļūda:", str(e))
+                print(f"\033[92mKļūda: {str(e)}\033[0m")
 
         elif choice == "2":
             pwd = input("Ievadi paroli pārbaudei: ")
-            print("Paroles stiprums:", manager.check_strength(pwd))
+            strength = manager.check_strength(pwd)
+            print(f"\033[92mParoles stiprums: {strength}\033[0m")
             manager.passwords.append(pwd)
             if ask_yes_no("Ne vēlaties saglabāt šo paroli failā? (y/n): "):
                 manager.save()
@@ -204,7 +208,7 @@ def main():
         elif choice == "5":
             sub = input("Ievadi fragmentu meklēšanai: ")
             found = manager.search(sub)
-            print("Rezultāti:", found if found else "Nav sakritību.")
+            print(f"\033[92mRezultāti: {found if found else 'Nav sakritību.'}\033[0m")
 
         elif choice == "6":
             level_map = {"1": "Vājš", "2": "Vidējs", "3": "Spēcīgs"}
@@ -214,33 +218,33 @@ def main():
                     level = level_map[level_input]
                     break
                 else:
-                    print("Nepareiza izvēle. Mēģini vēlreiz (1, 2 vai 3).")
+                    print("\033[92mNepareiza izvēle. Mēģini vēlreiz (1, 2 vai 3).\033[0m")
 
             filtered = manager.filter_by_strength(level)
-            print("Rezultāti:", filtered if filtered else "Nav sakritību.")
+            print(f"\033[92mRezultāti: {filtered if filtered else 'Nav sakritību.'}\033[0m")
 
         elif choice == "7":
-            print("Programma tiek aizvērta.")
+            print("\033[92mProgramma tiek aizvērta.\033[0m")
             break
 
         elif choice == "8":
-            print("\nKārtošanas veidi:")
+            print("\n\033[92mKārtošanas veidi:")
             print("1 - Garums")
             print("2 - Alfabēts")
-            print("3 - Stiprums")
+            print("3 - Stiprums\033[0m")
             sort_choice = input("Izvēlies kārtošanas veidu (1/2/3): ").strip()
             sort_map = {"1": "length", "2": "alphabet", "3": "strength"}
             sort_by = sort_map.get(sort_choice)
 
             if not sort_by:
-                print("Nepareiza izvēle.")
+                print("\033[92mNepareiza izvēle.\033[0m")
                 continue
 
             sorted_pwds = manager.sort_passwords(by=sort_by)
             display_password_table(sorted_pwds)
 
         else:
-            print("Nepareiza izvēle. Mēģini vēlreiz.")
+            print("\033[92mNepareiza izvēle. Mēģini vēlreiz.\033[0m")
 
 
 if __name__ == "__main__":
