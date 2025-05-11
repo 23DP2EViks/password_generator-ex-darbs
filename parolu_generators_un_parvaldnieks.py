@@ -3,7 +3,6 @@ import string
 import json
 import re
 
-
 def generate_password(length=12, use_digits=True, use_symbols=True, include_rare_symbols=False, excluded_chars=""):
     if length < 4:
         raise ValueError("Parolei jābūt vismaz 4 simbolus garai.")
@@ -74,12 +73,41 @@ def display_password_table(password_list):
         print("\033[92mNav par ko rādīt.\033[0m")
         return
 
-    print("\033[92m")
-    print(f"{'N.p.k.':<6} | {'Parole':<25} | {'Stiprums'}")
-    print("-" * 50)
+    border = "\033[34m" + "-" * 52 + "\033[0m"
+    print(border)
+    print("\033[34m|\033[0m \033[92m{:^4} \033[34m|\033[0m \033[92m{:<25} \033[34m|\033[0m \033[92m{:<10} \033[34m|\033[0m".format("Nr", "Parole", "Stiprums"))
+    print(border)
     for idx, item in enumerate(password_list, 1):
-        print(f"{idx:<6} | {item['password']:<25} | {item['strength']}")
-    print("\033[0m")
+        print("\033[34m|\033[0m \033[92m{:^4} \033[34m|\033[0m \033[92m{:<25} \033[34m|\033[0m \033[92m{:<10} \033[34m|\033[0m".format(idx, item['password'], item['strength']))
+    print(border)
+
+
+class PasswordStats:
+    def __init__(self, passwords):
+        self.passwords = passwords
+        self.weak = 0
+        self.medium = 0
+        self.strong = 0
+        self.total = 0
+        self._analyze()
+
+    def _analyze(self):
+        for entry in self.passwords:
+            strength = entry.get("strength")
+            if strength == "Vājš":
+                self.weak += 1
+            elif strength == "Vidējs":
+                self.medium += 1
+            elif strength == "Spēcīgs":
+                self.strong += 1
+        self.total = len(self.passwords)
+
+    def display(self):
+        print("\033[93mParoļu statistika:")
+        print(f"Kopā: {self.total}")
+        print(f" - Vājš: {self.weak}")
+        print(f" - Vidējs: {self.medium}")
+        print(f" - Spēcīgs: {self.strong}\033[0m")
 
 
 class PasswordManager:
@@ -154,6 +182,16 @@ class PasswordManager:
 
         return sorted_data
 
+    def show_stats(self):
+        try:
+            with open("passwords.json", "r", encoding="utf-8") as file:
+                data = json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            data = []
+
+        stats = PasswordStats(data)
+        stats.display()
+
 
 def main():
     manager = PasswordManager()
@@ -166,7 +204,8 @@ def main():
         print("5. Meklēt paroles pēc fragmenta")
         print("6. Filtrēt paroles pēc stipruma")
         print("7. Iziet")
-        print("8. Kārtot paroles un parādīt tabulā\033[0m")
+        print("8. Kārtot paroles un parādīt tabulā")
+        print("9. Rādīt statistiku parolēm\033[0m")
 
         choice = input("Atlasīt darbību: ")
 
@@ -242,6 +281,9 @@ def main():
 
             sorted_pwds = manager.sort_passwords(by=sort_by)
             display_password_table(sorted_pwds)
+
+        elif choice == "9":
+            manager.show_stats()
 
         else:
             print("\033[92mNepareiza izvēle. Mēģini vēlreiz.\033[0m")
