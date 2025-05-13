@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paroļu generators</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="container">
+
+<section class="hero">
+  <div class="hero-content">
+    <h1>Laipni lūdzam mūsu mājaslapā</h1>
+    <p>Kādas ir mūsu koda priekšrocības?</p>
+    <a href="#contact" class="btn">Uzzināt</a>
+  </div>
+</section>
+
+  <header>
+    <nav>
+    <button class="burger" id="burger"><div></div><div></div><div></div></button>
+<div class="nav-links">
+
+      <a href="#about">Par programmu</a>
+      <a href="#download">Lejupielādēt</a>
+      <a href="#features">Funkcijas</a>
+      <a href="#usage">Lietošana</a>
+      <a href="#instructions">Programmas lietošanas instrukcija</a>
+      <a href="#contact">kontakti</a>
+    </div></nav>
+    <div class="logo-background">
+      <img src="secure.png" alt="lock icon">
+    </div>
+    <h1 class="transparent-text">Paroļu <br><span class="highlight">generators</span></h1>
+    <div class="subtitle">Lietotne paroļu ģenerēšanai,<br> pārbaudei un saglabāšanai.</div>
+  </header>
+  <main>
+    <section id="about">
+      <h2>Par programmu</h2>
+      <ol>
+        <li>Šī ir Python konsoles programma, kas palīdz lietotājiem ģenerēt, pārvaldīt un pārbaudīt paroles pielāgojamā un drošā veidā.</li>
+      </ol>
+    </section>
+    <section id="features">
+      <h2>Funkcijas</h2>
+      <ul>
+        <li><img src="pen.svg" alt=""> Ģenerēt paroli</li>
+        <li><img src="view.png" alt=""> Pārbaudīt paroles stiprumu</li>
+        <li><img src="diskette.png" alt="" > Saglabāt ģenerētās paroles failā</li>
+        <li><img src="bin.png" alt=""> Notīrīt parole failu</li>
+        <li><img src="loupe.png" alt=""> Meklēt paroles pēc fragmenta</li>
+        <li><img src="shield.png" alt=""> Filtrēt paroles pēc stipruma</li>
+        <li><img src="exit.svg" alt=""> Iziet</li>
+        <li><img src="folder.png" alt=""> Kārtot paroles un parādīt tabulā</li>
+        <li><img src="stat.png" alt=""> Rādīt statistiku parolēm</li>
+      </ul>
+    </section>
+    <section id="download">
+      <h2>Lejupielādēt</h2>
+      <p>Iegūt jaunāko programmas versiju</p>
+      <a href="parolu_generators_un_parvaldnieks.zip" download><button>Download</button></a>
+    </section>
+    <section id="usage">
+      <h2>Lietošana</h2>
+      <ol>
+        <li>Pārliecinies, ka Python 3 ir uzstādīts.</li>
+        <li>Noklikšķiniet uz pogas "Download", lai instalētu programmu.</li>
+        <li>Lejupielādiet "parolu_generators_un_parvaldnieks.zip" failu.</li>
+        <li>Izpakojiet zip failu.</li>
+        <li>Palaidiet programmu komandrindā.</li>
+      </ol>
+    </section>
+    <section id="instructions">
+      <h2>Programmas lietošanas instrukcija</h2>
+      <ol>
+        <li>Programma tiek palaista caur konsoli un piedāvā 9 izvēlnes punktus. Tālāk ir sniegts detalizēts skaidrojums par to, ko katrs punkts dara un kā to izmantot.</li>
+      </ol>
+      <h3>1. Ģenerēt paroli</h3>
+      <ol>
+        <li>Mērķis: izveidot drošu, unikālu un pielāgojamu paroli.</li>
+        <li>Kā lietot:</li>
+        <li>Pēc izvēles ievadiet vajadzīgo paroles garumu (noklusējums: 12 simboli).</li>
+        <li>Atbildiet uz šādiem jautājumiem (y/n):</li>
+        <li>Ieslēgt ciparus?</li>
+        <li>Ieslēgt īpašās rakstzīmes?</li>
+        <li>Iekļaut arī retās rakstzīmes (piemēram, `[]{}~"`` utt.)?</li>
+        <li>Norādiet simbolus, ko izslēgt (piemēram: 0OIl|) vai atstājiet tukšu, lai neko neizslēgtu.</li>
+        <li>Programma ģenerēs paroli, parādīs to un tās stiprumu:</li>
+        <li>"Vājš", "Vidējs", vai "Spēcīgs".</li>
+      </ol>
+      <h3>2. Pārbaudīt paroles stiprumu</h3>
+      <ol>
+        <li>Mērķis: novērtēt ievadītās paroles drošību.</li>
+        <li>Kā lietot:</li>
+        <li>Ievadiet paroli pārbaudei (līdz 128 simboliem).</li>
+        <li>Programma parādīs tās stiprumu: "Vājš", "Vidējs", vai "Spēcīgs".</li>
+        <li>Tiks piedāvāts saglabāt šo paroli failā passwords.json (neobligāti).</li>
+      </ol>
+      <h3>3. Saglabāt ģenerētās paroles failā</h3>
+      <ol>
+        <li>Mērķis: saglabāt visas sesijā ģenerētās paroles failā passwords.json.</li>
+        <li>Kā lietot:</li>
+        <li>Atlasiet šo vienumu jebkurā brīdī, lai saglabātu visas līdz šim ģenerētās paroles.</li>
+        <li>Paroles tiek saglabātas kopā ar to stipruma līmeni.</li>
+        <li>Ja parole jau atrodas failā, tā netiks atkārtoti saglabāta (dublikāti netiek reģistrēti).</li>
+      </ol>
+      <h3>4. Notīrīt parole failu</h3>
+      <ol>
+        <li>Mērķis: pilnībā izdzēst faila passwords.json saturu.</li>
+        <li>Kā lietot:</li>
+        <li>Apstipriniet darbību ar y, ja vēlaties dzēst visu faila saturu.</li>
+        <li>Visas paroles tiks neatgriezeniski izdzēstas.</li>
+      </ol>
+      <h3>5. Meklēt paroles pēc fragmenta</h3>
+      <ol>
+        <li>Mērķis: atrast paroles, kas satur konkrētu rakstzīmju virkni.</li>
+        <li>Kā lietot:</li>
+        <li>Ievadiet meklējamo fragmentu.</li>
+        <li>Programma parādīs visas paroles no faila, kurās šis fragments ir iekļauts.</li>
+      </ol>
+      <h3>6. Filtrēt paroles pēc stipruma</h3>
+      <ol>
+        <li>Mērķis: parādīt tikai tās paroles, kas atbilst izvēlētajam drošības līmenim.</li>
+        <li>Kā lietot:</li>
+        <li>Ievadiet vajadzīgā līmeņa numuru:</li>
+        <li>1 — Vājš</li>
+        <li>2 — Vidējs</li>
+        <li>3 — Spēcīgs</li>
+        <li>Tiks parādīts saraksts ar visām atbilstošajām parolēm.</li>
+      </ol>
+      <h3>7. Iziet</h3>
+      <ol>
+        <li>Mērķis: pārtraukt programmas darbību.</li>
+        <li>Kā lietot:</li>
+        <li>Atlasiet šo vienumu, lai izietu no programmas.</li>
+      </ol>
+      <h3>8. Kārtot paroles un parādīt tabulā</h3>
+      <ol>
+        <li>Mērķis: kārtot paroles pēc izvēlēta kritērija un parādīt tabulā ar stipruma norādi.</li>
+        <li>Kā lietot:</li>
+        <li>Izvēlieties kārtošanas veidu:</li>
+        <li>1 — pēc garuma</li>
+        <li>2 — pēc alfabēta</li>
+        <li>3 — pēc stipruma</li>
+        <li>Tiks parādīta tabula ar kolonnām Nr, Parole, Stiprums.</li>
+      </ol>
+      <h3>9. Rādīt statistiku parolēm</h3>
+      <ol>
+        <li>Mērķis: parādīt statistiku par visām saglabātajām parolēm failā.</li>
+        <li>Kā lietot:</li>
+        <li>Programma parādīs kopējo paroļu skaitu un sadalījumu pēc līmeņiem:</li>
+        <li>Cik vājas</li>
+        <li>Cik vidējas</li>
+        <li>Cik spēcīgas</li>
+      </ol>
+    </section>
+  </main>
+  <footer id="contact">
+    <div class="footer-icon">
+      <img src="github.png" alt="github"> <a href="https://github.com/">https://github.com/</a>
+    </div>
+    <div class="footer-icon">
+      <img src="phone.png" alt="phone"> +371 xxxxxxxxx
+    </div>
+  </footer>
+  <script src="script.js"></script>
+
+<section class="features">
+  <h2>Mūsu priekšrocības</h2>
+  <div class="card-grid">
+    <div class="card">
+      <i class="fas fa-bolt"></i>
+      <h3>Ātri</h3>
+      <p>Ātra kodu īstenošana un palaišana.</p>
+    </div>
+    <div class="card">
+      <i class="fas fa-shield-alt"></i>
+      <h3>Uzticami</h3>
+      <p>Ģenerēt drošas paroles ar pielāgotu garumu, cipariem un simboliem.</p>
+    </div>
+    <div class="card">
+      <i class="fas fa-magic"></i>
+      <h3>Radoši</h3>
+      <p>Spēja izveidot un pārbaudīt savas paroles stiprumu.</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+</body>
+</html>

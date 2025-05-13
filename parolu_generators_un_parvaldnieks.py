@@ -6,6 +6,8 @@ import re
 def generate_password(length=12, use_digits=True, use_symbols=True, include_rare_symbols=False, excluded_chars=""):
     if length < 4:
         raise ValueError("Parolei jābūt vismaz 4 simbolus garai.")
+    if length > 128:
+        raise ValueError("Parolei jābūt ne garākai par 128 simboliem.")
 
     lowercase = string.ascii_lowercase
     uppercase = string.ascii_uppercase
@@ -43,7 +45,6 @@ def generate_password(length=12, use_digits=True, use_symbols=True, include_rare
 
     return ''.join(password_chars)
 
-
 def check_password_strength(password):
     length_score = len(password) >= 12
     has_lower = re.search(r'[a-z]', password) is not None
@@ -58,7 +59,6 @@ def check_password_strength(password):
     else:
         return "Vājš"
 
-
 def ask_yes_no(prompt):
     while True:
         answer = input(prompt).strip().lower()
@@ -67,20 +67,30 @@ def ask_yes_no(prompt):
         else:
             print("\033[92mNepareiza ievade. Lūdzu ievadiet 'y' vai 'n'.\033[0m")
 
-
 def display_password_table(password_list):
     if not password_list:
         print("\033[92mNav par ko rādīt.\033[0m")
         return
 
-    border = "\033[34m" + "-" * 52 + "\033[0m"
-    print(border)
-    print("\033[34m|\033[0m \033[92m{:^4} \033[34m|\033[0m \033[92m{:<25} \033[34m|\033[0m \033[92m{:<10} \033[34m|\033[0m".format("Nr", "Parole", "Stiprums"))
-    print(border)
-    for idx, item in enumerate(password_list, 1):
-        print("\033[34m|\033[0m \033[92m{:^4} \033[34m|\033[0m \033[92m{:<25} \033[34m|\033[0m \033[92m{:<10} \033[34m|\033[0m".format(idx, item['password'], item['strength']))
-    print(border)
+    max_pwd_length = max(len(item["password"]) for item in password_list)
+    max_pwd_length = max(max_pwd_length, len("Parole"))
 
+    total_width = 4 + 2 + max_pwd_length + 2 + 10 + 2 + 4
+
+    border = "\033[34m" + "=" * total_width + "\033[0m"
+    row_separator = "\033[34m" + "-" * total_width + "\033[0m"
+    header_format = f"\033[34m|\033[0m \033[96m{{:^4}}\033[0m \033[34m|\033[0m \033[96m{{:<{max_pwd_length}}}\033[0m \033[34m|\033[0m \033[96m{{:<10}}\033[0m \033[34m|\033[0m"
+    row_format = f"\033[34m|\033[0m {{:^4}} \033[34m|\033[0m {{:<{max_pwd_length}}} \033[34m|\033[0m {{:<10}} \033[34m|\033[0m"
+
+    print(border)
+    print(header_format.format("Nr", "Parole", "Stiprums"))
+    print(row_separator)
+
+    for idx, item in enumerate(password_list, 1):
+        print(row_format.format(idx, item['password'], item['strength']))
+        print(row_separator)
+
+    print(border)
 
 class PasswordStats:
     def __init__(self, passwords):
@@ -108,7 +118,6 @@ class PasswordStats:
         print(f" - Vājš: {self.weak}")
         print(f" - Vidējs: {self.medium}")
         print(f" - Spēcīgs: {self.strong}\033[0m")
-
 
 class PasswordManager:
     def __init__(self):
@@ -192,7 +201,6 @@ class PasswordManager:
         stats = PasswordStats(data)
         stats.display()
 
-
 def main():
     manager = PasswordManager()
 
@@ -231,6 +239,9 @@ def main():
 
         elif choice == "2":
             pwd = input("Ievadi paroli pārbaudei: ")
+            if len(pwd) > 128:
+                print("\033[92mParole nedrīkst pārsniegt 128 simbolus.\033[0m")
+                continue
             strength = manager.check_strength(pwd)
             print(f"\033[92mParoles stiprums: {strength}\033[0m")
             manager.passwords.append(pwd)
@@ -247,7 +258,15 @@ def main():
         elif choice == "5":
             sub = input("Ievadi fragmentu meklēšanai: ")
             found = manager.search(sub)
-            print(f"\033[92mRezultāti: {found if found else 'Nav sakritību.'}\033[0m")
+            if found:
+                print("\033[92mRezultāti:\033[0m [", end="")
+                for i, pwd in enumerate(found):
+                    print(f"\033[96m{pwd}\033[0m", end="")
+                    if i != len(found) - 1:
+                        print(", ", end="")
+                print("]")
+            else:
+                print("\033[92mRezultāti: Nav sakritību.\033[0m")
 
         elif choice == "6":
             level_map = {"1": "Vājš", "2": "Vidējs", "3": "Spēcīgs"}
@@ -260,7 +279,15 @@ def main():
                     print("\033[92mNepareiza izvēle. Mēģini vēlreiz (1, 2 vai 3).\033[0m")
 
             filtered = manager.filter_by_strength(level)
-            print(f"\033[92mRezultāti: {filtered if filtered else 'Nav sakritību.'}\033[0m")
+            if filtered:
+                print("\033[92mRezultāti:\033[0m [", end="")
+                for i, pwd in enumerate(filtered):
+                    print(f"\033[96m{pwd}\033[0m", end="")
+                    if i != len(filtered) - 1:
+                        print(", ", end="")
+                print("]")
+            else:
+                print("\033[92mRezultāti: Nav sakritību.\033[0m")
 
         elif choice == "7":
             print("\033[92mProgramma tiek aizvērta.\033[0m")
@@ -287,7 +314,6 @@ def main():
 
         else:
             print("\033[92mNepareiza izvēle. Mēģini vēlreiz.\033[0m")
-
 
 if __name__ == "__main__":
     main()

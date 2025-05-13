@@ -28,76 +28,74 @@
 
 
 ## 📘 Programmas lietošanas instrukcija
-Programma tiek palaista caur konsoli un piedāvā 8 izvēlnes punktus. Tālāk ir sniegts detalizēts skaidrojums par to, ko katrs punkts dara un kā to izmantot.
+Programma tiek palaista caur konsoli un piedāvā 9 izvēlnes punktus. Tālāk ir sniegts detalizēts skaidrojums par to, ko katrs punkts dara un kā to izmantot.
 
-### 1. Ģenerēt paroli 
-
-Mērķis: izveidojiet drošu, unikālu un pielāgojamu paroli.
+### 1. Ģenerēt paroli
+Mērķis: izveidot drošu, unikālu un pielāgojamu paroli.
 
 Kā lietot:
 
-Pēc vienuma atlasīšanas ievadiet vajadzīgo paroles garumu (noklusējums 12).
+Pēc izvēles ievadiet vajadzīgo paroles garumu (noklusējums: 12 simboli).
 
-Atbildi uz jautājumiem y/n:
+Atbildiet uz šādiem jautājumiem (y/n):
 
-Ieslēgt ciparus??
+Ieslēgt ciparus?
 
 Ieslēgt īpašās rakstzīmes?
 
-Iekļaut arī retās rakstzīmes (piemēram, []{}~" utt.)?
+Iekļaut arī retās rakstzīmes (piemēram, `[]{}~"`` utt.)?
 
-Lūdzu, norādiet izslēdzamās rakstzīmes (ja tādas ir) vai atstājiet lauku tukšu.
+Norādiet simbolus, ko izslēgt (piemēram: 0OIl|) vai atstājiet tukšu, lai neko neizslēgtu.
 
-Pēc tam tiks ģenerēta parole un tiks parādīts tās stiprums ("Vājš", "Vidējs", "Spēcīgs").
+Programma ģenerēs paroli, parādīs to un tās stiprumu:
+"Vājš", "Vidējs", vai "Spēcīgs".
 
 ### 2. Pārbaudīt paroles stiprumu
-
 Mērķis: novērtēt ievadītās paroles drošību.
 
 Kā lietot:
 
-Ievadiet paroli, kuru vēlaties pārbaudīt.
+Ievadiet paroli pārbaudei (līdz 128 simboliem).
 
-Programma parādīs drošības līmeni: "Vājš", "Vidējs" vai "Spēcīgs".
+Programma parādīs tās stiprumu: "Vājš", "Vidējs", vai "Spēcīgs".
 
-Jums tiks piedāvāts saglabāt ievadīto paroli failā (neobligāti).
+Tiks piedāvāts saglabāt šo paroli failā passwords.json (neobligāti).
 
 ### 3. Saglabāt ģenerētās paroles failā
-Mērķis: ierakstiet visas ģenerētās paroles failā passwords.json.
+Mērķis: saglabāt visas sesijā ģenerētās paroles failā passwords.json.
 
 Kā lietot:
 
-Atlasiet šo opciju, lai saglabātu visas iepriekš ģenerētās paroles.
+Atlasiet šo vienumu jebkurā brīdī, lai saglabātu visas līdz šim ģenerētās paroles.
 
 Paroles tiek saglabātas kopā ar to stipruma līmeni.
 
-Dublikāti netiek reģistrēti.
+Ja parole jau atrodas failā, tā netiks atkārtoti saglabāta (dublikāti netiek reģistrēti).
 
 ### 4. Notīrīt parole failu
-
-Mērķis: pilnībā izdzēsiet faila passwords.json saturu.
+Mērķis: pilnībā izdzēst faila passwords.json saturu.
 
 Kā lietot:
 
-Programma prasīs apstiprinājumu.
+Apstipriniet darbību ar y, ja vēlaties dzēst visu faila saturu.
 
-Ja atbildēsit "y", visas paroles tiks dzēstas bez atkopšanas iespējas.
+Visas paroles tiks neatgriezeniski izdzēstas.
 
 ### 5. Meklēt paroles pēc fragmenta
-Mērķis: atrast paroles, kas satur noteiktu apakšvirkni.
+Mērķis: atrast paroles, kas satur konkrētu rakstzīmju virkni.
 
 Kā lietot:
 
-Ievadiet daļu no paroles vai rakstzīmēm, kurām ir jābūt parolē.
+Ievadiet meklējamo fragmentu.
 
-Programma izvadīs atbilstību sarakstu no faila passwords.json.
+Programma parādīs visas paroles no faila, kurās šis fragments ir iekļauts.
 
 ### 6. Filtrēt paroles pēc stipruma
-Mērķis: parādīt paroles, kas atbilst atlasītajam drošības līmenim.
+Mērķis: parādīt tikai tās paroles, kas atbilst izvēlētajam drošības līmenim.
 
 Kā lietot:
 
-Ievadiet līmeņa numuru:
+Ievadiet vajadzīgā līmeņa numuru:
 
 1 — Vājš
 
@@ -105,23 +103,42 @@ Ievadiet līmeņa numuru:
 
 3 — Spēcīgs
 
-Programma parādīs paroļu sarakstu no faila, kas atbilst šim līmenim.
+Tiks parādīts saraksts ar visām atbilstošajām parolēm.
 
 ### 7. Iziet
-Mērķis: pārtraukt programmu.
+Mērķis: pārtraukt programmas darbību.
 
 Kā lietot:
 
-Vienkārši atlasiet šo vienumu, lai izietu no programmas.
+Atlasiet šo vienumu, lai izietu no programmas.
 
 ### 8. Kārtot paroles un parādīt tabulā
-Mērķis: kārtojiet paroles pēc garuma, alfabēta vai to stipruma un parādiet tās tabulā ar norādīto stiprumu.
+Mērķis: kārtot paroles pēc izvēlēta kritērija un parādīt tabulā ar stipruma norādi.
 
 Kā lietot:
 
-Paroles no faila passwords.json tiks sakārtotas pēc garuma, alfabēta vai stipruma.
+Izvēlieties kārtošanas veidu:
 
-Ekrānā parādīsies tabula ar divām kolonnām: "Parole" un "Stiprums".
+1 — pēc garuma
+
+2 — pēc alfabēta
+
+3 — pēc stipruma
+
+Tiks parādīta tabula ar kolonnām Nr, Parole, Stiprums.
+
+### 9. Rādīt statistiku parolēm
+Mērķis: parādīt statistiku par visām saglabātajām parolēm failā.
+
+Kā lietot:
+
+Programma parādīs kopējo paroļu skaitu un sadalījumu pēc līmeņiem:
+
+Cik vājas
+
+Cik vidējas
+
+Cik spēcīgas
 
 ## Izmantotās tehnoloģijas
 
